@@ -1,0 +1,11 @@
+// framework that makes sense to include:
+github.com/gin-gonic/gin   // ORM library
+gorm.io/gorm               // package that we will be used to authenticate and generate our JWT
+github.com/golang-jwt/jwt  // to help manage our environment variables
+golang.org/x/crypto
+gorm.io/driver/mysql
+
+// framework that doesn't really make sense to include:
+github.com/joho/godotenv   // to encrypt our user's password, maybe not needed
+github.com/gin-contrib/cors
+
