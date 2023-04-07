@@ -30,6 +30,7 @@ func main() {
 	publicRoutes := mGin.Group("/api")
 	publicRoutes.POST("/register", authController.Register)
 	publicRoutes.POST("/login", authController.Login)
+	publicRoutes.POST("/login-phone", authController.LoginPhone)
 	
 	mGin.Run()
 }

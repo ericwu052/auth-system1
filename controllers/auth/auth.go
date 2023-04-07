@@ -15,6 +15,11 @@ type LoginInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type LoginPhoneInput struct {
+	Phone string `json:"phone" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
 func verifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
@@ -25,8 +30,22 @@ func loginCheck(email, password string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	
-	err = verifyPassword(user.PasswordHash, password)
+
+	return loginCheck2(user, password)
+}
+
+func loginPhoneCheck(phone, password string) (string, error) {
+
+	user, err := models.GetUserByPhone(phone)
+	if err != nil {
+		return "", err
+	}
+
+	return loginCheck2(user, password)
+}
+
+func loginCheck2(user *models.User, password string) (string, error) {
+	err := verifyPassword(user.PasswordHash, password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", err
 	}
@@ -48,7 +67,23 @@ func Login(c *gin.Context) {
 
 	token, err := loginCheck(input.Email, input.Password)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username or password is incorrect."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "email not found or password is incorrect."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
+}
+
+func LoginPhone(c *gin.Context) {
+	var input LoginPhoneInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	token, err := loginPhoneCheck(input.Phone, input.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "phone number not found or password is incorrect."})
 		return
 	}
 

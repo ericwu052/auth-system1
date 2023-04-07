@@ -26,6 +26,17 @@ func GetUserByEmail(email string) (*User, error) {
 	return u, err
 }
 
+func GetUserByPhone(phone string) (*User, error) {
+	u := &User{}
+	
+	err := GlobalDb.Model(User{}).
+		Where("mobile_no = ?", phone).
+		Take(u).
+		Error
+
+	return u, err
+}
+
 func (this *User) SaveUser(password string) (*User, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
