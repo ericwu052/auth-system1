@@ -18,8 +18,9 @@ func ConnectDatabase() {
 	dbName := os.Getenv("DB_NAME")
 	dbPort := os.Getenv("DB_PORT")
 	dbConstr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", dbUser, dbPassword, dbHost, dbPort, dbName)
-	
-	GlobalDb, err := gorm.Open(mysql.Open(dbConstr), &gorm.Config{})
+
+	var err error
+	GlobalDb, err = gorm.Open(mysql.Open(dbConstr), &gorm.Config{})
 	if err != nil {
 		fmt.Println("Cannot connect to MySQL database")
 		log.Fatal("connection error:", err)

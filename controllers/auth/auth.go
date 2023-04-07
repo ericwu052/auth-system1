@@ -29,9 +29,8 @@ func Register(c *gin.Context) {
 	u.Email = input.Email
 	u.Fullname = input.Fullname
 	u.MobileNo = input.MobileNo
-	u.Password = input.Password
 
-	_, err := u.SaveUser()
+	_, err := u.SaveUser(input.Password)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
