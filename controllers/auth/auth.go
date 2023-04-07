@@ -10,6 +10,31 @@ import (
 	"github.com/eriwu052/auth-system1/utils/token"
 )
 
+type EmailInput struct {
+	Email string `json:"email" binding:"required,email"`
+}
+
+func RequestOtpEmail(c *gin.Context) {
+	var input EmailInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := models.GetUserByEmail(input.Email)
+	if err != nil {
+		/** email not found */
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		return
+	}
+
+	ok, err := models.ForgotPasswordFlow(user.ID)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Forgot password OTP sent"})
+}
+
 type LoginInput struct {
 	Email string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`

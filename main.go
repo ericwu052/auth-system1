@@ -31,6 +31,7 @@ func main() {
 	publicRoutes.POST("/register", authController.Register)
 	publicRoutes.POST("/login", authController.Login)
 	publicRoutes.POST("/login-phone", authController.LoginPhone)
+	publicRoutes.POST("/request-otp-email", authController.RequestOtpEmail)
 	
 	mGin.Run()
 }
