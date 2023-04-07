@@ -11,7 +11,7 @@ import (
 )
 
 type LoginInput struct {
-	Email string `json:"email" binding:"required"`
+	Email string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -23,7 +23,7 @@ func loginCheck(email, password string) (string, error) {
 
 	user, err := models.GetUserByEmail(email)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	
 	err = verifyPassword(user.PasswordHash, password)
@@ -43,6 +43,7 @@ func Login(c *gin.Context) {
 	var input LoginInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	token, err := loginCheck(input.Email, input.Password)
