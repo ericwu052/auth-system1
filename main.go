@@ -29,6 +29,7 @@ func main() {
 
 	publicRoutes := mGin.Group("/api")
 	publicRoutes.POST("/register", authController.Register)
+	publicRoutes.POST("/login", authController.Login)
 	
 	mGin.Run()
 }

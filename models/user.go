@@ -11,8 +11,19 @@ type User struct {
 	gorm.Model
 	Email string `gorm:"size:255;not null;unique" json:"email"`
 	Fullname string `gorm:"size:255;not null;" json:"fullname"`
-	MobileNo string `gorm:"size:255;not null;" json:"mobileNo"`
+	MobileNo string `gorm:"size:255;not null;unique" json:"mobileNo"`
 	PasswordHash string `gorm:"size:255;not null;" json:"passwordHash"`
+}
+
+func GetUserByEmail(email string) (*User, error) {
+	u := &User{}
+	
+	err := GlobalDb.Model(User{}).
+		Where("email = ?", email).
+		Take(u).
+		Error
+
+	return u, err
 }
 
 func (this *User) SaveUser(password string) (*User, error) {
