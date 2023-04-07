@@ -29,4 +29,5 @@ func ConnectDatabase() {
 	}
 
 	GlobalDb.AutoMigrate(&User{})
+	GlobalDb.AutoMigrate(&Otp{})
 }
